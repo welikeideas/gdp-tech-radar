@@ -1,0 +1,25 @@
+{
+  "name": "gdp-tech-radar",
+  "version": "1.0.0",
+  "description": "GDP Tech Radar",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.16.3",
+    "mongodb": "^3.0.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JD-Sky/gdp-tech-radar.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JD-Sky/gdp-tech-radar/issues"
+  },
+  "homepage": "https://github.com/JD-Sky/gdp-tech-radar#readme"
+}
