@@ -1,13 +1,19 @@
 var express = require('express');
 var mongodb = require('mongodb');
+var fs = require('fs');
+var handlebars = require('handlebars');
 
 var app = express();
 var mongoConnectionString = process.env.MONGODB_URI;
 
+handlebars.registerHelper('sanitizeClass', function(classString) {
+    return classString.toLowerCase().replace(/\W/g, '');
+});
+
 app.get('/', function(req, res){
 
-    var string = '<ul><li>GET <a href="/chart">/chart</a> - tech radar lifespan chart.</li><li>GET <a href="/all">/all</a> - fetch all records.</li><li>GET <a href="/name/shak-ng">/name/{app_name}</a> - fetch records by name, e.g. shak-ng.</li><li>GET <a href="/status/use">/status/{status}</a> - fetch records by status, e.g. use.</li><li>GET <a href="/lifespan/3">/lifespan/{lifespan}</a> - fetch records by lifespan, e.g. 3.</li></ul>';
-    res.send(string);
+    var html = fs.readFileSync('./templates/index.html').toString();
+    res.send(html);
 
 });
 
@@ -121,7 +127,7 @@ app.get('/chart', function(req, res){
     
         let applications = db.collection('applications');
     
-        applications.find({}).sort({ lifespan: 1 }).toArray(function (err, docs) {
+        applications.find({}).sort({ name: 1 }).toArray(function (err, docs) {
 
             if(err) throw err;
 
@@ -137,30 +143,61 @@ app.get('/chart', function(req, res){
                 if (doc.lifespan > maxSpan) {
                     maxSpan = doc.lifespan;
                 }
-                apps.push({"name": doc.name,"span": doc.lifespan})
             }
 
             maxSpan++;
 
-            var ul = [];
+            var list = {};
+            list.applications = [];
+            list.statuses = {};
+            list.statuses.assess = 0;
+            list.statuses.trial = 0;
+            list.statuses.use = 0;
+            list.statuses.hold = 0;
+            list.statuses.retire = 0;
 
-            for (var appsKey in apps) {
-                var app = apps[appsKey];
-                var colour = "green";
-                if (app.span <= 1) {
-                    colour = "red"
-                } else if (app.span > 1 && app.span < 3) {
-                    colour = "orange"
+            for (var docKey in docs) {
+                var doc = docs[docKey];
+                doc.width = ((doc.lifespan+1)/maxSpan) * 100;
+                list.applications.push(doc)
+                if (doc.status == "Assess") {
+                    list.statuses.assess++;
                 }
-                var width = (app.span/maxSpan) * 100;
-                ul.push('<li style="background-color:'+colour+';width:'+width+'%;">'+app.name+'</li>')
+                if (doc.status == "Trial") {
+                    list.statuses.trial++;
+                }
+                if (doc.status == "Use") {
+                    list.statuses.use++;
+                }
+                if (doc.status == "Hold") {
+                    list.statuses.hold++;
+                }
+                if (doc.status == "Retire") {
+                    list.statuses.retire++;
+                }
             }
 
-            res.send('<html><head><style>body{font-family:Arial;}ul{list-style-type:none;}li{height:30px;margin-bottom:10px;line-height:30px;padding-left: 5px;white-space:nowrap;}</style></head><body><h1>GDP Platform Lifespan Chart</h1><ul>'+ul.join('')+'</ul></body></html>');
+            var i = 0;
+            var year = (new Date()).getFullYear();
+            list.years = [];
+            while (i < maxSpan) {
+                list.years.push({"year":year});
+                year++;
+                i++;
+            }
+            list.yearsWidth = 100/list.years.length;
+
+            var hbs = fs.readFileSync('./templates/chart.hbs').toString();
+            var template = handlebars.compile(hbs);
+            var result = template(list);
+
+            res.send(result);
 
         });
     });
 
 });
 
-app.listen(process.env.PORT);
+var port = (process.env.PORT) ? process.env.PORT : 3000;
+
+app.listen(port);
