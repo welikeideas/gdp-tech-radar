@@ -68,20 +68,87 @@
             #statuses .headers {
                 font-size: 2em;
             }
+            #statuses .headers td span {
+                background-color: rgb(65, 65, 65);
+                color: white;
+                -webkit-border-radius: 16px;
+                -moz-border-radius: 16px;
+                border-radius: 16px;
+                text-decoration:none;
+                font-weight:bold;
+                padding:0 15px;
+                height: auto;
+                display: inline-block;
+                text-align:center;
+            }
+            #statuses .headers td span.a {
+                background-color: rgb(106, 192, 207);
+            }
+            #statuses .headers td span.t {
+                background-color: rgb(178, 108, 187);
+            }
+            #statuses .headers td span.u {
+                background-color: rgb(47, 143, 60);
+            }
+            #statuses .headers td span.h {
+                background-color: rgb(226, 159, 58);
+            }
+            #statuses .headers td span.r {
+                background-color: rgb(206, 78, 78);
+            }
             #statuses .counts {
                 font-size: 6em;
+            }
+            p {
+                font-weight: bold;
+            }
+            a {
+                background-color: rgb(65, 65, 65);
+                color: white;
+                -webkit-border-radius: 16px;
+                -moz-border-radius: 16px;
+                border-radius: 16px;
+                text-decoration:none;
+                font-weight:bold;
+                padding:0 15px;
+                line-height:32px;
+                height: auto;
+                display:inline-block;
+                text-align:center;
+            }
+            .dot {
+                height: 10px;
+                width: 10px;
+                border-radius: 50%;
+                display: inline-block;
+                margin-right: 5px;
+            }
+            .dot.Assess {
+                background-color: rgb(106, 192, 207);
+            }
+            .dot.Trial {
+                background-color: rgb(178, 108, 187);
+            }
+            .dot.Use {
+                background-color: rgb(47, 143, 60);
+            }
+            .dot.Hold {
+                background-color: rgb(226, 159, 58);
+            }
+            .dot.Retire {
+                background-color: rgb(206, 78, 78);
             }
         </style>
     </head>
     <body>
-        <h1>GDP Applications</h1>
+        <h1>{{title}} Applications</h1>
         <table id="statuses">
             <tr class="headers">
-                <td>Assess</td>
-                <td>Trial</td>
-                <td>Use</td>
-                <td>Hold</td>
-                <td>Retire</td>
+                <td><span class="a">Assess</span></td>
+                <td><span class="t">Trial</span></td>
+                <td><span class="u">Use</span></td>
+                <td><span class="h">Hold</span></td>
+                <td><span class="r">Retire</span></td>
             </tr>
             <tr class="counts">
                 <td>{{statuses.assess}}</td>
@@ -99,9 +166,21 @@
         <div style="clear:both;"></div>
         <ul>
             {{#applications}}
-            <li style="width:{{width}}%;">{{name}}</li>
+            <li style="width:{{width}}%;"><span class="dot {{status}}"></span>{{name}}</li>
             <li style="width:{{width}}%;" class="{{sanitizeClass area}} areabar">{{area}}</li>
             {{/applications}}
         </ul>
+        <p>Filter By</p>
+        {{#areas}}
+        <a href="{{url}}">{{name}}</a>
+        {{/areas}}
+        {{#if showAll}}
+        <a href="/chart">All</a>
+        {{/if}}
+        <p>Sort By</p>
+        <a href="{{sort.name}}">Name</a>
+        <a href="{{sort.lifespan}}">Lifespan</a>
+        <a href="{{sort.area}}">Area</a>
+        <a href="{{sort.status}}">Status</a>
     </body>
 </html>

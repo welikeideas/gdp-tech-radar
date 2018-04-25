@@ -1,14 +1,10 @@
 var express = require('express');
 var mongodb = require('mongodb');
 var fs = require('fs');
-var handlebars = require('handlebars');
+var chart = require('./chart.js');
 
 var app = express();
 var mongoConnectionString = process.env.MONGODB_URI;
-
-handlebars.registerHelper('sanitizeClass', function(classString) {
-    return classString.toLowerCase().replace(/\W/g, '');
-});
 
 app.get('/', function(req, res){
 
@@ -126,70 +122,36 @@ app.get('/chart', function(req, res){
         let db = client.db(process.env.MONGODB_DB)
     
         let applications = db.collection('applications');
+
+        var find = {};
+        var viewTitle = "GDP";
+        var filter = "";
+        if (req.query.area) {
+            find = {area:req.query.area};
+            viewTitle = req.query.area;
+            filter = "?area="+encodeURIComponent(req.query.area);
+        }
+        var sort = {name:1};
+        if (req.query.sort) {
+            if (req.query.sort == "name") {
+                sort = {name:1};
+            }
+            if (req.query.sort == "area") {
+                sort = {area:1};
+            }
+            if (req.query.sort == "lifespan") {
+                sort = {lifespan:1};
+            }
+            if (req.query.sort == "status") {
+                sort = {status:1};
+            }
+        }
     
-        applications.find({}).sort({ name: 1 }).toArray(function (err, docs) {
+        applications.find(find).sort(sort).toArray(function (err, docs) {
 
             if(err) throw err;
 
-            var apps = [];
-            var minSpan = 999;
-            var maxSpan = 0;
-
-            for (var docKey in docs) {
-                var doc = docs[docKey];
-                if (doc.lifespan < minSpan) {
-                    minSpan = doc.lifespan;
-                }
-                if (doc.lifespan > maxSpan) {
-                    maxSpan = doc.lifespan;
-                }
-            }
-
-            maxSpan++;
-
-            var list = {};
-            list.applications = [];
-            list.statuses = {};
-            list.statuses.assess = 0;
-            list.statuses.trial = 0;
-            list.statuses.use = 0;
-            list.statuses.hold = 0;
-            list.statuses.retire = 0;
-
-            for (var docKey in docs) {
-                var doc = docs[docKey];
-                doc.width = ((doc.lifespan+1)/maxSpan) * 100;
-                list.applications.push(doc)
-                if (doc.status == "Assess") {
-                    list.statuses.assess++;
-                }
-                if (doc.status == "Trial") {
-                    list.statuses.trial++;
-                }
-                if (doc.status == "Use") {
-                    list.statuses.use++;
-                }
-                if (doc.status == "Hold") {
-                    list.statuses.hold++;
-                }
-                if (doc.status == "Retire") {
-                    list.statuses.retire++;
-                }
-            }
-
-            var i = 0;
-            var year = (new Date()).getFullYear();
-            list.years = [];
-            while (i < maxSpan) {
-                list.years.push({"year":year});
-                year++;
-                i++;
-            }
-            list.yearsWidth = 100/list.years.length;
-
-            var hbs = fs.readFileSync('./templates/chart.hbs').toString();
-            var template = handlebars.compile(hbs);
-            var result = template(list);
+            var result = chart.build(docs, viewTitle, filter);
 
             res.send(result);
 
