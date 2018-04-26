@@ -6,6 +6,8 @@ var chart = require('./chart.js');
 var app = express();
 var mongoConnectionString = process.env.MONGODB_URI;
 
+app.use("/assets", express.static(__dirname + '/templates/assets'));
+
 app.get('/', function(req, res){
 
     var html = fs.readFileSync('./templates/index.html').toString();

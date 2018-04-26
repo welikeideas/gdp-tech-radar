@@ -1,0 +1,168 @@
+@font-face {
+    font-family: skytext;
+    src: url(/assets/Sky_Reg.ttf);
+}
+body {
+    font-family: skytext;
+    color: #4a4a4a;
+    background-image: -webkit-linear-gradient(left,#f2f2f5 0%,#fff 50%,#f2f2f5 100%);
+    background-image: -moz-linear-gradient(left,#f2f2f5 0%,#fff 50%,#f2f2f5 100%);
+    background-image: -o-linear-gradient(left,#f2f2f5 0%,#fff 50%,#f2f2f5 100%);
+    background-image: linear-gradie;
+    text-align: center;
+}
+h1 {
+    font-size: 3em;
+}
+ul {
+    list-style-type: none;
+    padding: 0px;
+}
+li {
+    height: 30px;
+    line-height: 30px;
+    text-indent: 5px;
+    white-space: nowrap;
+    text-align: left;
+    background-color: rgb(202, 202, 202);
+}
+li.areabar {
+    height: 10px;
+    line-height: 10px;
+    margin-bottom: 10px;
+    font-size: 9px;
+    background-color: rgb(65, 65, 65);
+    color: white;
+}
+li.sportsnews {
+}
+li.engagement {
+}
+li.agency {
+}
+li.cc {
+}
+#years {
+    width: 100%;
+}
+#years .year {
+    display: inline-block;
+    padding: 0px;
+    border: 0px;
+    float: left;
+    border-bottom: 1px solid #656464;
+    border-right: 1px solid #656464;
+    margin-left: -1px;
+}
+#years .year:last-of-type {
+    border-right: none;
+}
+#statuses {
+    width: 100%;
+    margin-bottom: 30px;
+}
+#statuses .headers {
+    font-size: 2em;
+}
+#statuses .headers td span {
+    background-color: rgb(65, 65, 65);
+    color: white;
+    -webkit-border-radius: 16px;
+    -moz-border-radius: 16px;
+    border-radius: 16px;
+    text-decoration:none;
+    font-weight:bold;
+    padding:0 15px;
+    height: auto;
+    display: inline-block;
+    text-align:center;
+}
+#statuses .headers td span.a {
+    background-color: rgb(106, 192, 207);
+}
+#statuses .headers td span.t {
+    background-color: rgb(178, 108, 187);
+}
+#statuses .headers td span.u {
+    background-color: rgb(47, 143, 60);
+}
+#statuses .headers td span.h {
+    background-color: rgb(226, 159, 58);
+}
+#statuses .headers td span.r {
+    background-color: rgb(206, 78, 78);
+}
+#statuses .counts {
+    font-size: 6em;
+}
+p {
+    font-weight: bold;
+}
+a.filter {
+    background-color: rgb(65, 65, 65);
+    color: white;
+    -webkit-border-radius: 16px;
+    -moz-border-radius: 16px;
+    border-radius: 16px;
+    text-decoration:none;
+    font-weight:bold;
+    padding:0 15px;
+    line-height:32px;
+    height: auto;
+    display:inline-block;
+    text-align:center;
+}
+.dot {
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+}
+.dot.Assess {
+    background-color: rgb(106, 192, 207);
+}
+.dot.Trial {
+    background-color: rgb(178, 108, 187);
+}
+.dot.Use {
+    background-color: rgb(47, 143, 60);
+}
+.dot.Hold {
+    background-color: rgb(226, 159, 58);
+}
+.dot.Retire {
+    background-color: rgb(206, 78, 78);
+}
+.tooltip .tooltiptext {
+    visibility: hidden;
+    background-color: #585858e3;
+    color: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    position: absolute;
+    left: 10px;
+    z-index: 1;
+    margin-top: -100px;
+    text-align: left;
+    font-size: .8em;
+    line-height: 1.8em;
+}
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+.lastreviewed {
+    font-size: .7em;
+}
+.notesheader {
+    margin-left: -5px;
+    border-bottom: 2px solid black;
+}
+.repo {
+    margin-bottom: -3px;
+    margin-right: 5px;
+    margin-left: 3px;
+}
+.git-link {
+    text-decoration: none;
+}
