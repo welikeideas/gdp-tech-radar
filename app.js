@@ -2,13 +2,17 @@ var express = require('express');
 var mongodb = require('mongodb');
 var fs = require('fs');
 var chart = require('./chart.js');
-var ipfilter = require('express-ipfilter').IpFilter;
+var basicAuth = require('express-basic-auth');
 
 var app = express();
 var mongoConnectionString = process.env.MONGODB_URI;
 
-var ipRange = [[process.env.LOWER_IP_RANGE,process.env.UPPER_IP_RANGE],['undefined','undefined']];
-app.use(ipfilter(ipRange, {mode: 'allow'}));
+var credentials = {};
+credentials[process.env.BASIC_AUTH_USER] = process.env.BASIC_AUTH_PASSWORD;
+app.use(basicAuth({
+    users: credentials,
+    challenge: true
+}))
 
 app.use("/assets", express.static(__dirname + '/templates/assets'));
 
