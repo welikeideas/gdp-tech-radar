@@ -28,7 +28,7 @@
         </div>
         <div style="clear:both;"></div>
         <ul>
-            {{#applications}}
+            {{#items}}
             <li style="width:{{width}}%;" class="tooltip">
                 <span class="dot {{status}}"></span>
                 {{#if repo}}
@@ -47,7 +47,7 @@
                 </span>
             </li>
             <li style="width:{{width}}%;" class="{{sanitizeClass area}} areabar">{{area}}</li>
-            {{/applications}}
+            {{/items}}
         </ul>
         <p>Filter By</p>
         {{#areas}}

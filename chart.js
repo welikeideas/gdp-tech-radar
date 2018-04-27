@@ -6,12 +6,9 @@ handlebars.registerHelper('sanitizeClass', function(classString) {
     return classString.toLowerCase().replace(/\W/g, '');
 });
 
-exports.build = function(docs, title, filter) {
-
-    var apps = [];
+var findSpanBoundaries = function(docs) {
     var minSpan = 999;
     var maxSpan = 0;
-
     for (var docKey in docs) {
         var doc = docs[docKey];
         if (doc.lifespan < minSpan) {
@@ -21,19 +18,17 @@ exports.build = function(docs, title, filter) {
             maxSpan = doc.lifespan;
         }
     }
-
     maxSpan++;
+    return [minSpan,maxSpan];
+}
 
-    var list = {};
-    list.applications = [];
-    list.areas = [];
-    list.title = title;
-    list.statuses = {};
-    list.statuses.assess = 0;
-    list.statuses.trial = 0;
-    list.statuses.use = 0;
-    list.statuses.hold = 0;
-    list.statuses.retire = 0;
+exports.build = function(docs, title, filter) {
+
+    var spanBoundaries = findSpanBoundaries(docs);
+    var maxSpan = spanBoundaries.pop();
+    var minSpan = spanBoundaries.pop();
+
+    var list = {items:[],areas:[],title:title,statuses:{assess:0,trial:0,use:0,hold:0,retire:0}};
     var areaCheck = [];
 
     for (var docKey in docs) {
@@ -46,21 +41,25 @@ exports.build = function(docs, title, filter) {
             list.areas.push(area);
             areaCheck[doc.area] = true;
         }
-        list.applications.push(doc)
-        if (doc.status == "Assess") {
-            list.statuses.assess++;
-        }
-        if (doc.status == "Trial") {
-            list.statuses.trial++;
-        }
-        if (doc.status == "Use") {
-            list.statuses.use++;
-        }
-        if (doc.status == "Hold") {
-            list.statuses.hold++;
-        }
-        if (doc.status == "Retire") {
-            list.statuses.retire++;
+        list.items.push(doc);
+        switch (doc.status) {
+            case "Assess":
+                list.statuses.assess++;
+                break;
+            case "Trial":
+                list.statuses.trial++;
+                break;
+            case "Use":
+                list.statuses.use++;
+                break;
+            case "Hold":
+                list.statuses.hold++;
+                break;
+            case "Retire":
+                list.statuses.retire++;
+                break;
+            default:
+                break;
         }
     }
     if (list.areas.length == 1) {
