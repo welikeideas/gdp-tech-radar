@@ -2,14 +2,18 @@ var express = require('express');
 var mongodb = require('mongodb');
 var fs = require('fs');
 var chart = require('./chart.js');
+var ipfilter = require('express-ipfilter').IpFilter;
 
 var app = express();
 var mongoConnectionString = process.env.MONGODB_URI;
 
+var ipRange = [[process.env.LOWER_IP_RANGE,process.env.UPPER_IP_RANGE],['undefined','undefined']];
+app.use(ipfilter(ipRange, {mode: 'allow'}));
+
 app.use("/assets", express.static(__dirname + '/templates/assets'));
 
 app.get('/', function(req, res){
-
+    
     var html = fs.readFileSync('./templates/index.html').toString();
     res.send(html);
 
