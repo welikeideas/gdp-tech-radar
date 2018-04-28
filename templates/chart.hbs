@@ -2,9 +2,17 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="/assets/styles.css">
+        <script type="text/javascript" src="/assets/script.js"></script>
     </head>
     <body>
-        <h1>{{title}} Applications</h1>
+        <h1>{{title}} <span id="groupSelect" class="group-select">{{group}}<i class="arrow-down"></i></span></h1>
+        <ul id="groupList" class="group-list invisible">
+            <li><a href="/firstparty">First Party Technologies</a></li>
+            <li><a href="/techniques">Techniques & Processes</a></li>
+            <li><a href="/languages">Languages & Frameworks</a></li>
+            <li><a href="/platforms">Platforms</a></li>
+            <li><a href="/tools">Tools</a></li>
+        </ul>
         <table id="statuses">
             <tr class="headers">
                 <td><span class="a">Assess</span></td>
@@ -27,7 +35,7 @@
             {{/years}}
         </div>
         <div style="clear:both;"></div>
-        <ul>
+        <ul class="items">
             {{#items}}
             <li style="width:{{width}}%;" class="tooltip">
                 <span class="dot {{status}}"></span>

@@ -22,13 +22,13 @@ var findSpanBoundaries = function(docs) {
     return [minSpan,maxSpan];
 }
 
-exports.build = function(docs, title, filter) {
+exports.build = function(docs, title, group, filter) {
 
     var spanBoundaries = findSpanBoundaries(docs);
     var maxSpan = spanBoundaries.pop();
     var minSpan = spanBoundaries.pop();
 
-    var list = {items:[],areas:[],title:title,statuses:{assess:0,trial:0,use:0,hold:0,retire:0}};
+    var list = {items:[],areas:[],title:title,group:group,statuses:{assess:0,trial:0,use:0,hold:0,retire:0}};
     var areaCheck = [];
 
     for (var docKey in docs) {

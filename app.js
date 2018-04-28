@@ -3,27 +3,77 @@ var mongodb = require('mongodb');
 var fs = require('fs');
 var chart = require('./chart.js');
 var basicAuth = require('express-basic-auth');
+var argv = require('yargs').argv;
 
 var app = express();
+
+if (argv.dev && argv.dev == 'true') {
+    var livereload = require('express-livereload');
+    livereload(app, config={});
+}
+
 var mongoConnectionString = process.env.MONGODB_URI;
+
+var getUnauthorisedResponse = function() {
+
+    var result = '<h1>GDP Tech Radar</h1><p>Find access details in #gdp-architecture</p>';
+    return result;
+
+}
 
 var credentials = {};
 credentials[process.env.BASIC_AUTH_USER] = process.env.BASIC_AUTH_PASSWORD;
 app.use(basicAuth({
     users: credentials,
-    challenge: true
+    challenge: true,
+    unauthorizedResponse: getUnauthorisedResponse
 }))
 
 app.use("/assets", express.static(__dirname + '/templates/assets'));
 
 app.get('/', function(req, res){
     
-    var html = fs.readFileSync('./templates/index.html').toString();
-    res.send(html);
+    var group = "firstparty"
+    chartResponse(req, res, group);
 
 });
 
-app.get('/all', function(req, res){
+app.get('/firstparty', function(req, res){
+    
+    var group = "firstparty"
+    chartResponse(req, res, group);
+
+});
+
+app.get('/techniques', function(req, res){
+    
+    var group = "techniques"
+    chartResponse(req, res, group);
+
+});
+
+app.get('/languages', function(req, res){
+    
+    var group = "languages"
+    chartResponse(req, res, group);
+
+});
+
+app.get('/platforms', function(req, res){
+    
+    var group = "platforms"
+    chartResponse(req, res, group);
+
+});
+
+app.get('/tools', function(req, res){
+    
+    var group = "tools"
+    chartResponse(req, res, group);
+
+});
+
+app.get('/api/all', function(req, res){
 
     console.log('fetching all records');
 
@@ -46,7 +96,7 @@ app.get('/all', function(req, res){
 
 });
 
-app.get('/status/:status', function(req, res){
+app.get('/api/status/:status', function(req, res){
 
     var status = req.params.status;
 
@@ -71,7 +121,7 @@ app.get('/status/:status', function(req, res){
 
 });
 
-app.get('/name/:name', function(req, res){
+app.get('/api/name/:name', function(req, res){
 
     var name = req.params.name;
 
@@ -96,7 +146,7 @@ app.get('/name/:name', function(req, res){
 
 });
 
-app.get('/lifespan/:lifespan', function(req, res){
+app.get('/api/lifespan/:lifespan', function(req, res){
 
     var lifespan = req.params.lifespan;
 
@@ -121,7 +171,7 @@ app.get('/lifespan/:lifespan', function(req, res){
 
 });
 
-app.get('/chart', function(req, res){
+var chartResponse = function(req, res, group) {
 
     console.log('rendering tech radar chart');
 
@@ -130,8 +180,36 @@ app.get('/chart', function(req, res){
         if(err) throw err;
     
         let db = client.db(process.env.MONGODB_DB)
+
+        var collection = "";
+        var groupTitle = "";
+
+        switch (group) {
+            case 'firstparty':
+                collection = 'firstparty';
+                groupTitle = 'First Party Technologies';
+                break;
+            case 'tools':
+                collection = 'tools';
+                groupTitle = 'Tools';
+                break;
+            case 'techniques':
+                collection = 'techniques';
+                groupTitle = 'Techniques & Processes';
+                break;
+            case 'platforms':
+                collection = 'platforms';
+                groupTitle = 'Platforms';
+                break;
+            case 'languages':
+                collection = 'languages';
+                groupTitle = 'Lanuages & Frameworks';
+                break;
+            default:
+                break;
+        }
     
-        let applications = db.collection('applications');
+        let list = db.collection(collection);
 
         var find = {};
         var viewTitle = "GDP";
@@ -157,18 +235,18 @@ app.get('/chart', function(req, res){
             }
         }
     
-        applications.find(find).sort(sort).toArray(function (err, docs) {
+        list.find(find).sort(sort).toArray(function (err, docs) {
 
             if(err) throw err;
 
-            var result = chart.build(docs, viewTitle, filter);
+            var result = chart.build(docs, viewTitle, groupTitle, filter);
 
             res.send(result);
 
         });
     });
 
-});
+}
 
 var port = (process.env.PORT) ? process.env.PORT : 3000;
 
