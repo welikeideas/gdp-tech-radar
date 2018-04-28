@@ -4,6 +4,7 @@
   "description": "GDP Tech Radar",
   "main": "app.js",
   "dependencies": {
+    "body-parser": "^1.18.2",
     "express": "^4.16.3",
     "express-basic-auth": "^1.1.5",
     "express-ipfilter": "^0.3.1",

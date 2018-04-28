@@ -247,3 +247,48 @@ a.filter {
 .invisible {
     visibility: hidden;
 }
+#editor_holder {
+    width: 34%;
+    margin-left: 33%;
+}
+.btn {
+    width: 17%
+}
+.glyphicon-arrow-left {
+    color: black;
+    position: absolute;
+    left: 30px;
+    top: 25px;
+}
+#addItem {
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+    color: #4a4a4a;
+    text-decoration: none;
+    font-weight: bold;
+    position: absolute;
+    top: 25px;
+    right: 30px;
+    font-size: 3em;
+    padding-left: 12px;
+    padding-right: 12px;
+    border-radius: 50px;
+    line-height: 1em;
+    padding-bottom: 5px;
+}
+#addItem:hover {
+    text-decoration: none;
+    background-color: #4a4a4a;
+    color: white;
+    padding-left: 12px;
+    padding-right: 12px;
+    border-radius: 50px;
+    line-height: 1em;
+    padding-bottom: 5px;
+}
+.control-label {
+    float: left;
+    text-transform: capitalize;
+    font-size: 1.3em;
+}

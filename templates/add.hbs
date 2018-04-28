@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>GDP Tech Radar Editor</title>
+    <script src="/assets/jsoneditor.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/styles.css">
+  </head>
+  <body>
+    <h1>GDP Tech Radar Editor</h1>
+
+    <input type="hidden" id="titleField" value="{{title}}">
+    <input type="hidden" id="groupField" value="{{group}}">
+    
+    <a href="/" title="Return to chart view"><span id="back" class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span></a>
+
+    <div id='editor_holder'></div>
+    <button id='submitReturn' type="button" class="btn btn-default">Add and return to chart</button>
+    <button id='submit' type="button" class="btn btn-default">Add and continue adding</button>
+    
+    <script type="text/javascript" src="/assets/add_script.js"></script>
+  </body>
+</html>

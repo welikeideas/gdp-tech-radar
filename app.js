@@ -4,6 +4,8 @@ var fs = require('fs');
 var chart = require('./chart.js');
 var basicAuth = require('express-basic-auth');
 var argv = require('yargs').argv;
+var handlebars = require('handlebars');
+var bodyParser = require('body-parser');
 
 var app = express();
 
@@ -28,6 +30,8 @@ app.use(basicAuth({
     challenge: true,
     unauthorizedResponse: getUnauthorisedResponse
 }))
+
+app.use(bodyParser.json());
 
 app.use("/assets", express.static(__dirname + '/templates/assets'));
 
@@ -73,9 +77,77 @@ app.get('/tools', function(req, res){
 
 });
 
-app.get('/api/all', function(req, res){
+app.get('/add/firstparty', function(req, res) {
 
-    console.log('fetching all records');
+    var group = "firstparty"
+    var hbs = fs.readFileSync('./templates/add.hbs').toString();
+    var template = handlebars.compile(hbs);
+    var result = template({group:group,title:'First Party Technology'});
+    res.send(result);
+
+});
+
+app.get('/add/techniques', function(req, res) {
+
+    var group = "techniques"
+    var hbs = fs.readFileSync('./templates/add.hbs').toString();
+    var template = handlebars.compile(hbs);
+    var result = template({group:group,title:'Technique/Process'});
+    res.send(result);
+
+});
+
+app.get('/add/languages', function(req, res) {
+
+    var group = "languages"
+    var hbs = fs.readFileSync('./templates/add.hbs').toString();
+    var template = handlebars.compile(hbs);
+    var result = template({group:group,title:'Language/Framework'});
+    res.send(result);
+
+});
+
+app.get('/add/platforms', function(req, res) {
+
+    var group = "platforms"
+    var hbs = fs.readFileSync('./templates/add.hbs').toString();
+    var template = handlebars.compile(hbs);
+    var result = template({group:group,title:'Platform'});
+    res.send(result);
+
+});
+
+app.get('/add/tools', function(req, res) {
+
+    var group = "tools"
+    var hbs = fs.readFileSync('./templates/add.hbs').toString();
+    var template = handlebars.compile(hbs);
+    var result = template({group:group,title:'Tool'});
+    res.send(result);
+
+});
+
+app.post('/api/add', function(req, res){
+
+    var group = req.body.group;
+    var object = req.body.object;
+
+    mongodb.MongoClient.connect(mongoConnectionString, function(err, client) {
+
+        if(err) throw err;
+    
+        var db = client.db(process.env.MONGODB_DB);
+        var collection = db.collection(group);
+
+        collection.insert(object, {}, function(err, doc) {
+            res.end();
+        });
+
+    });
+
+});
+
+/* app.get('/api/all', function(req, res){
 
     mongodb.MongoClient.connect(mongoConnectionString, function(err, client) {
 
@@ -100,8 +172,6 @@ app.get('/api/status/:status', function(req, res){
 
     var status = req.params.status;
 
-    console.log('fetching records by status');
-
     mongodb.MongoClient.connect(mongoConnectionString, function(err, client) {
 
         if(err) throw err;
@@ -124,8 +194,6 @@ app.get('/api/status/:status', function(req, res){
 app.get('/api/name/:name', function(req, res){
 
     var name = req.params.name;
-
-    console.log('fetching records by name');
 
     mongodb.MongoClient.connect(mongoConnectionString, function(err, client) {
 
@@ -150,8 +218,6 @@ app.get('/api/lifespan/:lifespan', function(req, res){
 
     var lifespan = req.params.lifespan;
 
-    console.log('fetching records by lifespan');
-
     mongodb.MongoClient.connect(mongoConnectionString, function(err, client) {
 
         if(err) throw err;
@@ -169,11 +235,9 @@ app.get('/api/lifespan/:lifespan', function(req, res){
         });
     });
 
-});
+}); */
 
 var chartResponse = function(req, res, group) {
-
-    console.log('rendering tech radar chart');
 
     mongodb.MongoClient.connect(mongoConnectionString, function(err, client) {
 
@@ -239,7 +303,7 @@ var chartResponse = function(req, res, group) {
 
             if(err) throw err;
 
-            var result = chart.build(docs, viewTitle, groupTitle, filter);
+            var result = chart.build(docs, viewTitle, groupTitle, group, filter);
 
             res.send(result);
 
