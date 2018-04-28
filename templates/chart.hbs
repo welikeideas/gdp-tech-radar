@@ -39,13 +39,13 @@
             {{#items}}
             <li style="width:{{width}}%;" class="tooltip">
                 <span class="dot {{status}}"></span>
-                {{#if repo}}
-                <a class="git-link" href="{{repo}}" target="_blank">
-                    <img class="repo" src="/assets/git.png" />
+                {{#if link}}
+                <a class="link" href="{{link}}" target="_blank">
+                    <img class="repo" src="/assets/{{#if ../isLink}}link{{/if}}{{#unless ../isLink}}git{{/unless}}.png" />
                 </a>
                 {{/if}}
-                {{#unless repo}}
-                    <img class="repo" src="/assets/git-fade.png" />
+                {{#unless link}}
+                    <img class="repo" src="/assets/{{#if ../isLink}}link{{/if}}{{#unless ../isLink}}git{{/unless}}-fade.png" />
                 {{/unless}}
                 {{name}}
                 <span class="tooltiptext">

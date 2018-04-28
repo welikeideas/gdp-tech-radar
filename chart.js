@@ -28,8 +28,12 @@ exports.build = function(docs, title, group, filter) {
     var maxSpan = spanBoundaries.pop();
     var minSpan = spanBoundaries.pop();
 
-    var list = {items:[],areas:[],title:title,group:group,statuses:{assess:0,trial:0,use:0,hold:0,retire:0}};
+    var list = {items:[],areas:[],title:title,group:group,statuses:{assess:0,trial:0,use:0,hold:0,retire:0},isLink:true};
     var areaCheck = [];
+
+    if (group == 'First Party Technologies') {
+        list.isLink = undefined;
+    }
 
     for (var docKey in docs) {
         var doc = docs[docKey];
