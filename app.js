@@ -155,6 +155,13 @@ app.get('/edit/:group/:id', function(req, res) {
 
 });
 
+app.get('/api', function(req, res){
+
+    var response = {actions:[{GET:'/api/group/:group/all'},{GET:'/api/group/:group/id/:id'}],groups:['firstparty','techniques','languages','platforms','tools']};
+    res.json(response);
+
+});
+
 app.post('/api/add', function(req, res){
 
     var group = req.body.group;
@@ -230,7 +237,9 @@ app.delete('/api/delete/:group/:id', function(req, res){
 
 });
 
-/* app.get('/api/all', function(req, res){
+app.get('/api/group/:group/all', function(req, res){
+
+    var group = req.params.group;
 
     mongodb.MongoClient.connect(mongoConnectionString, function(err, client) {
 
@@ -238,9 +247,9 @@ app.delete('/api/delete/:group/:id', function(req, res){
     
         let db = client.db(process.env.MONGODB_DB)
     
-        let applications = db.collection('applications');
+        let collection = db.collection(group);
     
-        applications.find({}).sort({ lifespan: 1 }).toArray(function (err, docs) {
+        collection.find({}).sort({ name: 1 }).toArray(function (err, docs) {
 
             if(err) throw err;
 
@@ -251,9 +260,10 @@ app.delete('/api/delete/:group/:id', function(req, res){
 
 });
 
-app.get('/api/status/:status', function(req, res){
+app.get('/api/group/:group/id/:id', function(req, res){
 
-    var status = req.params.status;
+    var group = req.params.group;
+    var id = new ObjectId(req.params.id);
 
     mongodb.MongoClient.connect(mongoConnectionString, function(err, client) {
 
@@ -261,64 +271,18 @@ app.get('/api/status/:status', function(req, res){
     
         let db = client.db(process.env.MONGODB_DB)
     
-        let applications = db.collection('applications');
+        let collection = db.collection(group);
     
-        applications.find({ status: { $regex : new RegExp(status, "i") } }).sort({ lifespan: 1 }).toArray(function (err, docs) {
+        collection.findOne({_id:id}, function (err, doc) {
 
             if(err) throw err;
 
-            res.send(docs);
+            res.send(doc);
 
         });
     });
 
 });
-
-app.get('/api/name/:name', function(req, res){
-
-    var name = req.params.name;
-
-    mongodb.MongoClient.connect(mongoConnectionString, function(err, client) {
-
-        if(err) throw err;
-    
-        let db = client.db(process.env.MONGODB_DB)
-    
-        let applications = db.collection('applications');
-    
-        applications.find({ name: { $regex : new RegExp(name, "i") } }).sort({ lifespan: 1 }).toArray(function (err, docs) {
-
-            if(err) throw err;
-
-            res.send(docs);
-
-        });
-    });
-
-});
-
-app.get('/api/lifespan/:lifespan', function(req, res){
-
-    var lifespan = req.params.lifespan;
-
-    mongodb.MongoClient.connect(mongoConnectionString, function(err, client) {
-
-        if(err) throw err;
-    
-        let db = client.db(process.env.MONGODB_DB)
-    
-        let applications = db.collection('applications');
-    
-        applications.find({ lifespan: { $regex : new RegExp(lifespan, "i") } }).sort({ lifespan: 1 }).toArray(function (err, docs) {
-
-            if(err) throw err;
-
-            res.send(docs);
-
-        });
-    });
-
-}); */
 
 var chartResponse = function(req, res, group) {
 
