@@ -12,13 +12,16 @@
 
     <input type="hidden" id="titleField" value="{{title}}">
     <input type="hidden" id="groupField" value="{{group}}">
+    {{#unless isAdd}}<input type="hidden" id="docField" value="{{doc}}">{{/unless}}
+    {{#unless isAdd}}<input type="hidden" id="idField" value="{{id}}">{{/unless}}
     
     <a href="/" title="Return to chart view"><span id="back" class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span></a>
 
     <div id='editor_holder'></div>
-    <button id='submitReturn' type="button" class="btn btn-default">Add and return to chart</button>
-    <button id='submit' type="button" class="btn btn-default">Add and continue adding</button>
+    <button id='submitReturn' type="button" class="btn btn-default">Submit and return to chart</button>
+    <button id='submit' type="button" class="btn btn-default">Submit and continue</button>
+    {{#unless isAdd}}<br /><button id='delete' type="button" class="btn btn-danger">Delete</button>{{/unless}}
     
-    <script type="text/javascript" src="/assets/add_script.js"></script>
+    <script type="text/javascript" src="/assets/crud_script.js"></script>
   </body>
 </html>

@@ -6,6 +6,7 @@ var basicAuth = require('express-basic-auth');
 var argv = require('yargs').argv;
 var handlebars = require('handlebars');
 var bodyParser = require('body-parser');
+var ObjectId = require('mongodb').ObjectID;
 
 var app = express();
 
@@ -77,53 +78,80 @@ app.get('/tools', function(req, res){
 
 });
 
-app.get('/add/firstparty', function(req, res) {
+app.get('/add/:group', function(req, res) {
 
-    var group = "firstparty"
-    var hbs = fs.readFileSync('./templates/add.hbs').toString();
+    var group = req.params.group;
+    switch (group) {
+        case "firstparty":
+            var title = 'First Party Technology';
+            break;
+        case "techniques":
+            var title = 'Technique/Process';
+            break;
+        case "languages":
+            var title = 'Language/Framework';
+            break;
+        case "tools":
+            var title = 'Tool';
+            break;
+        case "platforms":
+            var title = 'Platform';
+            break;
+        default:
+            break;
+    }
+    var hbs = fs.readFileSync('./templates/crud.hbs').toString();
     var template = handlebars.compile(hbs);
-    var result = template({group:group,title:'First Party Technology'});
+    var result = template({group:group,title:title,isAdd:true});
     res.send(result);
 
 });
 
-app.get('/add/techniques', function(req, res) {
+app.get('/edit/:group/:id', function(req, res) {
 
-    var group = "techniques"
-    var hbs = fs.readFileSync('./templates/add.hbs').toString();
-    var template = handlebars.compile(hbs);
-    var result = template({group:group,title:'Technique/Process'});
-    res.send(result);
+    var group = req.params.group;
+    var id = req.params.id;
+    switch (group) {
+        case "firstparty":
+            var title = 'First Party Technology';
+            break;
+        case "techniques":
+            var title = 'Technique/Process';
+            break;
+        case "languages":
+            var title = 'Language/Framework';
+            break;
+        case "tools":
+            var title = 'Tool';
+            break;
+        case "platforms":
+            var title = 'Platform';
+            break;
+        default:
+            break;
+    }
 
-});
+    mongodb.MongoClient.connect(mongoConnectionString, function(err, client) {
 
-app.get('/add/languages', function(req, res) {
+        if(err) throw err;
 
-    var group = "languages"
-    var hbs = fs.readFileSync('./templates/add.hbs').toString();
-    var template = handlebars.compile(hbs);
-    var result = template({group:group,title:'Language/Framework'});
-    res.send(result);
+        var db = client.db(process.env.MONGODB_DB);
+        var collection = db.collection(group);
 
-});
+        collection.findOne({"_id": new ObjectId(id)}, function(err, doc) {
+            
+            if(err) throw err;
 
-app.get('/add/platforms', function(req, res) {
+            var hbs = fs.readFileSync('./templates/crud.hbs').toString();
+            var template = handlebars.compile(hbs);
+            var result = template({group:group,title:title,doc:JSON.stringify(doc),id:id});
+            res.send(result);
 
-    var group = "platforms"
-    var hbs = fs.readFileSync('./templates/add.hbs').toString();
-    var template = handlebars.compile(hbs);
-    var result = template({group:group,title:'Platform'});
-    res.send(result);
+        });
 
-});
+        
 
-app.get('/add/tools', function(req, res) {
-
-    var group = "tools"
-    var hbs = fs.readFileSync('./templates/add.hbs').toString();
-    var template = handlebars.compile(hbs);
-    var result = template({group:group,title:'Tool'});
-    res.send(result);
+    });
 
 });
 
@@ -131,6 +159,7 @@ app.post('/api/add', function(req, res){
 
     var group = req.body.group;
     var object = req.body.object;
+    delete object._id;
 
     mongodb.MongoClient.connect(mongoConnectionString, function(err, client) {
 
@@ -140,7 +169,61 @@ app.post('/api/add', function(req, res){
         var collection = db.collection(group);
 
         collection.insert(object, {}, function(err, doc) {
+
+            if(err) throw err;
+
             res.end();
+
+        });
+
+    });
+
+});
+
+app.post('/api/edit', function(req, res){
+
+    var group = req.body.group;
+    var object = req.body.object;
+    var id = new ObjectId(object._id);
+    delete object._id;
+
+    mongodb.MongoClient.connect(mongoConnectionString, function(err, client) {
+
+        if(err) throw err;
+    
+        var db = client.db(process.env.MONGODB_DB);
+        var collection = db.collection(group);
+
+        collection.updateOne({_id:id}, {$set:object}, {upsert:false}, function(err, doc) {
+            
+            if(err) throw err;
+
+            res.end();
+
+        });
+
+    });
+
+});
+
+app.delete('/api/delete/:group/:id', function(req, res){
+
+    var group = req.params.group;
+    var id = new ObjectId(req.params.id);
+
+    mongodb.MongoClient.connect(mongoConnectionString, function(err, client) {
+
+        if(err) throw err;
+    
+        var db = client.db(process.env.MONGODB_DB);
+        var collection = db.collection(group);
+
+        collection.deleteOne({_id:id}, function(err, doc) {
+            
+            if(err) throw err;
+
+            res.end();
+
         });
 
     });

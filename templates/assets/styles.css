@@ -251,8 +251,12 @@ a.filter {
     width: 34%;
     margin-left: 33%;
 }
-.btn {
+.btn-default {
     width: 17%
+}
+.btn-danger {
+    margin-top: 5px;
+    width: 34%;
 }
 .glyphicon-arrow-left {
     color: black;
@@ -291,4 +295,16 @@ a.filter {
     float: left;
     text-transform: capitalize;
     font-size: 1.3em;
+}
+.edit-icon {
+    float: right;
+    margin-top: 5px;
+    margin-right: 5px;
+    visibility: hidden;
+}
+ul.items li:hover .edit-icon {
+    visibility: visible;
+}
+textarea.form-control {
+    height: 120px;
 }

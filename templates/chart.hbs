@@ -52,6 +52,7 @@
                     <img class="repo" src="/assets/{{#if ../isLink}}link{{/if}}{{#unless ../isLink}}git{{/unless}}-fade.png" />
                 {{/unless}}
                 {{name}}
+                <a class="edit-icon" href="/edit/{{../url}}/{{_id}}"><img src="/assets/edit.png" /></a>
                 <span class="tooltiptext">
                     <span class="notesheader">Notes</span>
                     <br />{{notes}}<br />
@@ -66,7 +67,7 @@
         <a class="filter" href="{{url}}">{{name}}</a>
         {{/areas}}
         {{#if showAll}}
-        <a class="filter" href="/chart">All</a>
+        <a class="filter" href="/">All</a>
         {{/if}}
         <p>Sort By</p>
         <a class="filter" href="{{sort.name}}">Name</a>
