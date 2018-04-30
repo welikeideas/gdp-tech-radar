@@ -7,6 +7,7 @@ var argv = require('yargs').argv;
 var handlebars = require('handlebars');
 var bodyParser = require('body-parser');
 var ObjectId = require('mongodb').ObjectID;
+var Json2csvParser = require('json2csv').Parser;
 
 var app = express();
 
@@ -31,6 +32,21 @@ app.use(basicAuth({
     challenge: true,
     unauthorizedResponse: getUnauthorisedResponse
 }))
+
+Object.defineProperty(Date.prototype, 'YYYYMMDDHHMMSS', {
+    value: function() {
+        function pad2(n) {  // always returns a string
+            return (n < 10 ? '0' : '') + n;
+        }
+
+        return this.getFullYear() +
+               pad2(this.getMonth() + 1) + 
+               pad2(this.getDate()) +
+               pad2(this.getHours()) +
+               pad2(this.getMinutes()) +
+               pad2(this.getSeconds());
+    }
+});
 
 app.use(bodyParser.json());
 
@@ -149,16 +165,44 @@ app.get('/edit/:group/:id', function(req, res) {
 
         });
 
-        
-
     });
 
 });
 
 app.get('/api', function(req, res){
 
-    var response = {actions:[{GET:'/api/group/:group/all'},{GET:'/api/group/:group/id/:id'}],groups:['firstparty','techniques','languages','platforms','tools']};
+    var response = {actions:[{GET:'/api/group/:group/all'},{GET:'/api/group/:group/id/:id'},{GET:'/api/export/group/:group'}],groups:['firstparty','techniques','languages','platforms','tools']};
     res.json(response);
+
+});
+
+app.get('/api/export/group/:group', function(req, res){
+
+    var group = req.params.group;
+
+    mongodb.MongoClient.connect(mongoConnectionString, function(err, client) {
+
+        if(err) throw err;
+
+        var db = client.db(process.env.MONGODB_DB);
+        var collection = db.collection(group);
+
+        collection.find({}).sort({ name: 1 }).toArray(function (err, docs) {
+
+            if(err) throw err;
+
+            var parser = new Json2csvParser({});
+            var csv = parser.parse(docs);
+
+            var dateString = new Date().YYYYMMDDHHMMSS();
+            var filename = 'export_'+group+'_'+dateString+'.csv';
+
+            res.set({"Content-Disposition":"attachment; filename=\""+filename+"\""});
+            res.send(csv);
+
+        });
+
+    });
 
 });
 
@@ -245,9 +289,9 @@ app.get('/api/group/:group/all', function(req, res){
 
         if(err) throw err;
     
-        let db = client.db(process.env.MONGODB_DB)
+        var db = client.db(process.env.MONGODB_DB);
     
-        let collection = db.collection(group);
+        var collection = db.collection(group);
     
         collection.find({}).sort({ name: 1 }).toArray(function (err, docs) {
 
