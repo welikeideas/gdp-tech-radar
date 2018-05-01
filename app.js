@@ -399,12 +399,13 @@ app.get('/api/group/:group/id/:id/icon', function(req, res) {
                 fill: '#fff'
             }, 'yrs'
             ).text({
-                x: 51,
+                x: 79,
                 y: 31,
                 'font-family': 'skytext',
                 'font-size': 20,
                 stroke : '#fff',
-                fill: '#fff'
+                fill: '#fff',
+                'text-anchor': 'middle'
             }, status.toUpperCase()).render();
 
             res.setHeader('Content-Type', 'image/svg+xml');
