@@ -358,7 +358,7 @@ app.get('/api/group/:group/id/:id/icon', function(req, res) {
                     break;
                 case 'Use':
                     colour = '#2f8f3c';
-                    lineColour = '#f5afff';
+                    lineColour = '#83ef92';
                     break;
                 case 'Hold':
                     colour = '#e29f3a';
