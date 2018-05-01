@@ -112,19 +112,19 @@ a.filter {
     margin-right: 5px;
 }
 .dot.Assess {
-    background-color: rgb(106, 192, 207);
+    background-color: #6ac0cf;
 }
 .dot.Trial {
-    background-color: rgb(178, 108, 187);
+    background-color: #b26cbb;
 }
 .dot.Use {
-    background-color: rgb(47, 143, 60);
+    background-color: #2f8f3c;
 }
 .dot.Hold {
-    background-color: rgb(226, 159, 58);
+    background-color: #e29f3a;
 }
 .dot.Retire {
-    background-color: rgb(206, 78, 78);
+    background-color: #ce4e4e;
 }
 .tooltip .tooltiptext {
     visibility: hidden;
