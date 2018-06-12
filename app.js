@@ -500,7 +500,7 @@ var chartResponse = function(req, res, group) {
                 break;
             case 'languages':
                 collection = 'languages';
-                groupTitle = 'Lanuages & Frameworks';
+                groupTitle = 'Languages & Frameworks';
                 break;
             default:
                 break;
